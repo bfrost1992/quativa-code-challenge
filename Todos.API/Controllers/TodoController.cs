@@ -9,13 +9,17 @@ namespace Todos.API.Controllers
 	[Route("[controller]")]
 	public class TodoController : ControllerBase
 	{
-		public TodoDbContext Context { get; set; }
+		private readonly TodoDbContext Context;
 
 		public TodoController(TodoDbContext context)
 		{
 			Context = context;
 		}
 
+		/// <summary>
+		/// Get all todos
+		/// </summary>
+		/// <returns></returns>
 		[HttpGet]
 		public async Task<IActionResult> Get() 
 		{
@@ -23,6 +27,12 @@ namespace Todos.API.Controllers
 			return Ok(todos);
 		}
 		
+		/// <summary>
+		/// Set label for a given todo
+		/// </summary>
+		/// <param name="todoId"></param>
+		/// <param name="cmd"></param>
+		/// <returns></returns>
 		[HttpPost("{todoId}/label")]
 		public async Task<IActionResult> Rename(long todoId, RenameTodoCommand cmd)
 		{
@@ -36,6 +46,13 @@ namespace Todos.API.Controllers
 			existingTodo.Label = cmd.Label;
 			return Ok(existingTodo);
 		}
+
+		/// <summary>
+		/// Set status for a given todo
+		/// </summary>
+		/// <param name="todoId"></param>
+		/// <param name="cmd"></param>
+		/// <returns></returns>
 		[HttpPost("{todoId}/status")]
 		public async Task<IActionResult> SetStatus(long todoId, SetTodoStatusCommand cmd)
 		{
@@ -48,8 +65,14 @@ namespace Todos.API.Controllers
 
 			existingTodo.Status = cmd.Completed;
 
-			return Ok();
+			return Ok(existingTodo);
 		}
+
+		/// <summary>
+		/// Remove a given todo
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		[HttpDelete]
 		public async Task<IActionResult> Delete(long id)
 		{
